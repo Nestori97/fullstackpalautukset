@@ -1,0 +1,20 @@
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    asks for the web page
+    activate server
+    server-->>browser: the css file
+    server responds with the style sheet
+    deactivate server, connection is shut down after transmission is done.
+    
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    asks for the javascript file
+    server-->>browser: the JavaScript file
+    server responds with the file and browser starst to execute it
+    deactivate server, connection is shut down after transmission is done.
+
+    No json document is asked from the server as nothing is posted as the javascript file does not spesifify to fetch them before submitting something
+```
