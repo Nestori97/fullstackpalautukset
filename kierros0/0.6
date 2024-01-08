@@ -1,0 +1,22 @@
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/spa
+    browser send form containing the data to server
+    activate server
+    server-->>browser: the css file
+    server responds with the style sheet
+    deactivate server, connection is shut down after transmission is done.
+
+    browser->>server: GET POST https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    asks for the javascript file
+    server-->>browser: https://studies.cs.helsinki.fi/exampleapp/spa.js
+    server responds with the file and browser starst to execute it
+    activate server
+    server-->>browser:https://studies.cs.helsinki.fi/exampleapp/data.json
+    deactivate server, connection is shut down after transmission is done. And the json data is rendered to the user
+
+
+```
