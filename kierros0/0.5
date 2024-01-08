@@ -5,14 +5,14 @@ sequenceDiagram
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
     asks for the web page
     activate server
-    server-->>browser: the css file
+    server-->>browser: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     server responds with the style sheet
     deactivate server, connection is shut down after transmission is done.
     
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
     activate server
     asks for the javascript file
-    server-->>browser: the JavaScript file
+    server-->>browser: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
     server responds with the file and browser starst to execute it
     deactivate server, connection is shut down after transmission is done.
 
