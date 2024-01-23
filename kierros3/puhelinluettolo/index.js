@@ -29,7 +29,7 @@ let persons = [
 ]
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-body', { stream: process.stdout }));
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
+    response.send('<h1>try page for more info /api/persons</h1>')
   })
   
   app.get('/api/persons', (request, response) => {
