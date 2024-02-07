@@ -29,8 +29,49 @@ const dummy = (blogs) => {
     var mostLiked=blogs.reduce(getMostLikedBlog)
     return mostLiked
   }
+  const mostBlogs = (blogs) => {
+    var authorWithMostBlogs = []
+    for (let i = 0; i < blogs.length; i++) {
+        const author = blogs[i].author
+        const filteredBlogs = blogs.filter(blogs => blogs.author === author)
+        if(filteredBlogs.length>authorWithMostBlogs.length){
+            authorWithMostBlogs=filteredBlogs
+        }
+      }
+      if(authorWithMostBlogs.length>0){
+        return {
+            author: authorWithMostBlogs[0].author,
+            blogs:authorWithMostBlogs.length
+        }
+      } 
+      return authorWithMostBlogs
+  }
+  const mostLikes = (blogs) => {
+    var authorWithMostLikes = {
+        author:"",
+        likes: Number.NEGATIVE_INFINITY
+    }
+    for (let i = 0; i < blogs.length; i++) {
+        const author = blogs[i].author
+        const filteredBlogs = blogs.filter(blogs => blogs.author === author)
+        var sumOfLikes = 0
+        filteredBlogs.forEach(blog => {
+            sumOfLikes = sumOfLikes + blog.likes
+        });
+        if(sumOfLikes>=authorWithMostLikes.likes){
+            authorWithMostLikes.author=filteredBlogs[0].author
+            authorWithMostLikes.likes=sumOfLikes
+        }
+    }
+    if(authorWithMostLikes.author.length>0){
+        return authorWithMostLikes
+    }
+    return []
+}
   module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs,
+    mostLikes
   }
