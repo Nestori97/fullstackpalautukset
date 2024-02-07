@@ -234,7 +234,7 @@ describe('most blogs', () => {
                 blogs:3})
           })    
         })
-describe('most blogs', () => {
+describe('most liked author', () => {
         const listWithOneBlog = [
             {
                 _id: '5a422aa71b54a676234d17f8',
