@@ -1,9 +1,14 @@
 
-const PORT = 3003
-const password =  ""
-const mongoUrl = `mongodb+srv://nestoriyrjonkoski:${password}@cluster0.uqtkiih.mongodb.net/?retryWrites=true&w=majority`
+require('dotenv').config()
+
+const PORT = process.env.PORT
+
+
+const MONGODB_URI = process.env.NODE_ENV === 'test' 
+  ? process.env.TEST_MONGODB_URI
+  : process.env.MONGODB_URI
 
 module.exports = {
-    mongoUrl,
-    PORT
-  }
+  MONGODB_URI,
+  PORT
+}

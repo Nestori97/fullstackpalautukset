@@ -1,11 +1,14 @@
 {
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "nodemo": "^1.0.0",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "supertest": "^6.3.4"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
     "express": "^4.18.2",
     "mongoose": "^7.6.5"
   },
@@ -13,11 +16,12 @@
   "version": "1.0.0",
   "main": "runko.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose"
+    "start": "set NODE_ENV=production&& node runko.js",
+    "dev": "set NODE_ENV=development&& nodemon runko.js",
+    "test": "jest --verbose --runInBand"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
   }
 }
