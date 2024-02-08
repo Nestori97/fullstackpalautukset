@@ -1,0 +1,10 @@
+Put http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "no likes",
+    "author": "mika mika",
+    "url": "None",
+    "likes": 5,
+    "id":"65c4fb2d5ed550027ab82e48"
+}
