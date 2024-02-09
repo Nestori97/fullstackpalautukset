@@ -77,7 +77,7 @@ initialUsers = [
             name: 'ukko pekka'
         }
         const response = await api.post('/api/users').send(newuser);
-        // code should be 400
+        // code should be 201
         expect(response.status).toBe(201);
         // usernames should be equal
         expect(response.body.username).toBe(newuser.username);

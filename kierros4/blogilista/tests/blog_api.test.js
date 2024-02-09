@@ -87,6 +87,7 @@ test('if no title is given response should be 400', async()=>{
   .expect(400)
 })
 test('delete blog with correct id', async()=>{
+  console.log(initialBlogs)
   await api.delete('/api/blogs').send(initialBlogs[1].id)
   const response = await api.get('/api/blogs')
   const body = response.body

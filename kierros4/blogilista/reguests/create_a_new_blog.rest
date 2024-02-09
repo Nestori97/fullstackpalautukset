@@ -1,8 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpbDEyNDIxNCIsImlkIjoiNjVjNjQyMTNiM2Y4YTQ1MmQ3MDM4NTQ5IiwiaWF0IjoxNzA3NDkxODk5fQ.Y1-geqldqVK2xKK9h4pL5Tf_-Bdj-A7hFLYITbi-cKs
 
 {
     "title": "no likes",
     "author": "jarno junttura",
-    "url": "None"
+    "url": "None",
+    "userId":"65c5f098b7a3d977e0920a49"
 }
