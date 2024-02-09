@@ -63,7 +63,7 @@ blogsRouter.post('/', async (request, response) => {
     }
     const userid =founduser.user.toString()
     if(decodedToken.id.toString()!==userid){
-      return response.status(400).json({ error: 'token id did not match the user id' })
+      return response.status(400).json({ error: 'the token resolved to wrong id and did not match the user id' })
     }
     await Blog.findByIdAndRemove(userid)
     response.status(204).end()
