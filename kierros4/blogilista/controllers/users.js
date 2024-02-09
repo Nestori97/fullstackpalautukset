@@ -21,7 +21,7 @@ usersRouter.post('/', async (request, response) => {
     }
     const areThereSameNamedUser =users.map(user => user.username === body.username).filter(isittrue => isittrue=== true)
     if(areThereSameNamedUser.length>0){
-        return response.status(400).json({error: "username must be uniques"})
+        return response.status(400).json({error: "username must be unique"})
     }
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
     const newUser = new User({
