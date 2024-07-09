@@ -1,117 +1,104 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
+import { useState, useEffect } from 'react';
+import Blog from './components/Blog';
+import blogService from './services/blogs';
+import loginService from './services/login';
+import Notification from './components/Notification';
+import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null) 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [blogs, setBlogs] = useState([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null); 
+  const [errorMessage, setErrorMessage] = useState(null);
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
-  useEffect(()=>{
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
-    if(loggedUserJSON){
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+    blogService.getAll().then(blogs => setBlogs(blogs));
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
     }
-  },[])
+  }, []);
+
   const handleLogin = async (event) => {
-    event.preventDefault()
-    try{
-      const user = await loginService.login({
-      username, password,})
-      setUser(user)
-      window.localStorage.setItem(
-        'loggedBlogUser', JSON.stringify(user)
-        ) 
-      setUsername("")
-      setPassword("")
-      setErrorMessage(`logged in as ${user.name}` )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }catch (exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-
-  }
-  const handleLogout = async (event) =>{
-    event.preventDefault()
-    window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
-  }
-  const handleNewBlog = async (event) =>{
-    event.preventDefault()
+    event.preventDefault();
     try {
-    const newblog = {
-      title:title,
-      author:author,
-      url:url,
+      const user = await loginService.login({ username, password });
+      setUser(user);
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user));
+      setUsername('');
+      setPassword('');
+      setErrorMessage(`Logged in as ${user.name}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    } catch (exception) {
+      setErrorMessage('Wrong credentials');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     }
-    console.log("jotakin")
-    const addedblog=await blogService.create(newblog)
-    setBlogs(blogs.concat(addedblog))
-    setErrorMessage(`created new blog ${title}` )
-    setTitle("")
-    setAuthor("")
-    setUrl("")
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
-  } catch(exception){
-    setErrorMessage(exception.response.data.error)
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
-  }
+  };
 
-  }
-  if(user === null){
-    return(
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogUser');
+    setUser(null);
+  };
+
+  const createBlog = async (newBlog) => {
+    try {
+      const addedBlog = await blogService.create(newBlog);
+      setBlogs(blogs.concat(addedBlog));
+      setErrorMessage(`Created new blog ${newBlog.title}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    } catch (exception) {
+      setErrorMessage(exception.response.data.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  if (user === null) {
+    return (
       <div>
         <h1>
           <Notification message={errorMessage} />
         </h1>
-         <h2>Log in to application</h2>
-         <form onSubmit={handleLogin}>
+        <h2>Log in to application</h2>
+        <form onSubmit={handleLogin}>
           <div>
             username
             <input
-            type = "text"
-            value = {username}
-            name = "Username"
-            onChange={({ target }) => setUsername(target.value)}
+              type="text"
+              value={username}
+              name="Username"
+              onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
             password
             <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+              type="password"
+              value={password}
+              name="Password"
+              onChange={({ target }) => setPassword(target.value)}
             />
           </div>
           <button type="submit">login</button>
-         </form>
+        </form>
       </div>
-    )
+    );
   }
+
   return (
     <div>
       <h1>
@@ -123,21 +110,13 @@ const App = () => {
       </p>
       <h2>blogs</h2>
       <Togglable buttonLabel="new blog">
-        <BlogForm
-          handleSubmit={handleNewBlog}
-          title={title}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          author={author}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          url={url}
-          handleUrlChange={({ target }) => setUrl(target.value)}
-        />
+        <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
