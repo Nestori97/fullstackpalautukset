@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -61,6 +63,7 @@ const App = () => {
       author:author,
       url:url,
     }
+    console.log("jotakin")
     const addedblog=await blogService.create(newblog)
     setBlogs(blogs.concat(addedblog))
     setErrorMessage(`created new blog ${title}` )
@@ -112,49 +115,27 @@ const App = () => {
   return (
     <div>
       <h1>
-      <Notification message={errorMessage} />
+        <Notification message={errorMessage} />
       </h1>
-      <p>{user.name} logged in
-      <button onClick= {handleLogout}> Logout
-      </button>
+      <p>
+        {user.name} logged in
+        <button onClick={handleLogout}>Logout</button>
       </p>
       <h2>blogs</h2>
-      <div>
-        <h3>Create New</h3>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          title:
-          <input
-          type = "text"
-          value = {title}
-          name = "Title"
-          onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-          type = "text"
-          value = {author}
-          name = "Author"
-          onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-          type = "text"
-          value = {url}
-          name = "Url"
-          onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-      <button type="submit">create</button>
-      </form>
-      </div>
-      {blogs.map(blog =>
+      <Togglable buttonLabel="new blog">
+        <BlogForm
+          handleSubmit={handleNewBlog}
+          title={title}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          author={author}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          url={url}
+          handleUrlChange={({ target }) => setUrl(target.value)}
+        />
+      </Togglable>
+      {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
-      )}
+      ))}
     </div>
   )
 }
