@@ -32,6 +32,7 @@ const App = () => {
       const user = await loginService.login({ username, password });
       setUser(user);
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user));
+      blogService.setToken(user.token);
       setUsername('');
       setPassword('');
       setErrorMessage(`Logged in as ${user.name}`);
@@ -45,7 +46,7 @@ const App = () => {
       }, 5000);
     }
   };
-
+  
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser');
     setUser(null);
@@ -72,6 +73,21 @@ const App = () => {
       const updatedBlog = { ...likedBlog, user: blog.user };
       setBlogs(blogs.map(b => b.id !== likedBlog.id ? b : updatedBlog).sort((a, b) => a.likes - b.likes));
       setErrorMessage(`liked a blog ${blog.title}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }catch (exception) {
+      setErrorMessage(exception.response.data.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  }
+  const deleteABlog = async (blog) => {
+    try {
+      const likedBlog = await blogService.deleteABlog(blog);
+      setBlogs(blogs.filter(b => b.id !== blog.id).sort((a, b) => a.likes - b.likes));
+      setErrorMessage(`deleted a blog ${blog.title}`);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -129,7 +145,7 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog => (
-        <Blog key = {blog.id} blog={blog} likeABlog={likeABlog} />
+        <Blog key = {blog.id} blog={blog} likeABlog={likeABlog} deleteABlog={deleteABlog}  />
       ))}
     </div>
   );

@@ -36,25 +36,24 @@ router.post('/', userExtractor, async (request, response) => {
 })
 
 router.delete('/:id', userExtractor, async (request, response) => {
-  const user = request.user
+  const blog = await Blog.findById(request.params.id);
 
-  const blog = await Blog.findById(request.params.id)
   if (!blog) {
-    return response.status(204).end()
+    return response.status(204).end();
   }
 
-  if ( user.id.toString() !== blog.user.toString() ) {
-    return response.status(403).json({ error: 'user not authorized' })
+  if (request.user.id.toString() !== blog.user.toString()) {
+    return response.status(403).json({ error: 'user not authorized' });
   }
 
-  await blog.deleteOne()
+  await Blog.deleteOne({ _id: request.params.id });
 
-  user.blogs = user.blogs.filter(b => b._id.toString() !== blog._id.toString())
+  request.user.blogs = request.user.blogs.filter(b => b.toString() !== request.params.id);
+  await request.user.save();
 
-  await user.save()
+  response.status(204).end();
+});
 
-  response.status(204).end()
-})
 
 router.put('/:id', async (request, response) => {
   const body = request.body
