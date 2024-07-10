@@ -66,6 +66,22 @@ const App = () => {
       }, 5000);
     }
   };
+  const likeABlog = async (blog) => {
+    try {
+      const likedBlog = await blogService.like(blog);
+      const updatedBlog = { ...likedBlog, user: blog.user };
+      setBlogs(blogs.map(b => b.id !== likedBlog.id ? b : updatedBlog));
+      setErrorMessage(`liked a blog ${blog.title}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }catch (exception) {
+      setErrorMessage(exception.response.data.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  }
 
   if (user === null) {
     return (
@@ -113,7 +129,7 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.map(blog => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key = {blog.id} blog={blog} likeABlog={likeABlog} />
       ))}
     </div>
   );
