@@ -14,7 +14,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs));
+    blogService.getAll().then(blogs => setBlogs(blogs.sort((a, b) => a.likes - b.likes)));
   }, []);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const App = () => {
   const createBlog = async (newBlog) => {
     try {
       const addedBlog = await blogService.create(newBlog);
-      setBlogs(blogs.concat(addedBlog));
+      setBlogs(blogs.concat(addedBlog).sort((a, b) => a.likes - b.likes));
       setErrorMessage(`Created new blog ${newBlog.title}`);
       setTimeout(() => {
         setErrorMessage(null);
@@ -70,7 +70,7 @@ const App = () => {
     try {
       const likedBlog = await blogService.like(blog);
       const updatedBlog = { ...likedBlog, user: blog.user };
-      setBlogs(blogs.map(b => b.id !== likedBlog.id ? b : updatedBlog));
+      setBlogs(blogs.map(b => b.id !== likedBlog.id ? b : updatedBlog).sort((a, b) => a.likes - b.likes));
       setErrorMessage(`liked a blog ${blog.title}`);
       setTimeout(() => {
         setErrorMessage(null);
