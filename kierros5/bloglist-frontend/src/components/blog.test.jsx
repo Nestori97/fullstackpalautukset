@@ -23,7 +23,6 @@ test('view button works correctly', async () => {
   const user = userEvent.setup()
   const button = screen.getByText('view')
   await user.click(button)
-  screen.debug()
   const url = screen.getByText((content, element) => element.tagName.toLowerCase() === 'div' && content.includes('www.aalto.fi'))
   const likes = screen.getByText((content, element) => element.tagName.toLowerCase() === 'div' && content.includes('1'))
   const userr = screen.getByText((content, element) => element.tagName.toLowerCase() === 'div' && content.includes('pekka jämsä'))
@@ -32,4 +31,23 @@ test('view button works correctly', async () => {
   expect(url).toBeDefined()
   expect(likes).toBeDefined()
   expect(userr).toBeDefined()
+})
+test('pressing like twice means that the function that is responsible for likes is called excatly twice', async () => {
+  const blog = {
+    title: 'behind this title is likes, author, url',
+    url: 'www.aalto.fi',
+    likes: 1,
+    author: 'pekka jämsä',
+    user: 'sanna marin',
+  }
+  const mockHandler = vi.fn()
+  render(<Blog blog={blog} likeABlog={mockHandler} />)
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
+  const likebutton = screen.getByText('like')
+  await user.click(likebutton)
+  expect(mockHandler.mock.calls).toHaveLength(1)
+  await user.click(likebutton)
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
