@@ -74,4 +74,29 @@ describe('blogs app', () => {
       await page.getByRole('button', { name: 'delete blog' }).click()
     })
   })
+  describe('blog deletion only possible with right user', () => {
+    test('a new blog can be delete', async ({ page, request }) => {
+      await page.getByRole('textbox').first().fill('mluukkai')
+      await page.getByRole('textbox').last().fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByRole('textbox').first().fill('testiblogideletenapillevainoikeallahenkilollä1')
+      await page.getByRole('textbox').last().fill('testiblogideletenapillevainoikeallahenkilollä1')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.getByRole('button', { name: 'Logout' }).click()
+      await request.post('http://localhost:3003/api/users', {
+        data: {
+          name: 'pekka',
+          username: 'pekka',
+          password: 'pekka'
+        }
+      })
+      await page.goto('http://localhost:5173')
+      await page.getByRole('textbox').first().fill('pekka')
+      await page.getByRole('textbox').last().fill('pekka')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByText('testiblogideletenapillevainoikeallahenkilollä1').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'delete blog' }).not.toBeVisible()
+    })
+  })
 })
