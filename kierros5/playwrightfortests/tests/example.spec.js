@@ -60,4 +60,18 @@ describe('blogs app', () => {
       await page.getByRole('button', { name: 'like' }).click()
     })
   })
+  describe('blog deletion', () => {
+    test('a new blog can be delete', async ({ page }) => {
+      await page.getByRole('textbox').first().fill('mluukkai')
+      await page.getByRole('textbox').last().fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByRole('textbox').first().fill('testiblogideletelle')
+      await page.getByRole('textbox').last().fill('testiblogideletelle')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.goto('http://localhost:5173')
+      await page.getByText('testiblogideletelle').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'delete blog' }).click()
+    })
+  })
 })
