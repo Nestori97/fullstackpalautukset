@@ -33,4 +33,17 @@ describe('blogs app', () => {
       await expect(page.getByText('vaara salasana logged in')).toBeVisible()
     })
   })
+  describe('blog creation', () => {
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('textbox').first().fill('mluukkai')
+      await page.getByRole('textbox').last().fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByRole('textbox').first().fill('testiblogi')
+      await page.getByRole('textbox').last().fill('testiblogi')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.goto('http://localhost:5173')
+      await expect(page.getByText('testiblogi')).toBeVisible()
+    })
+  })
 })
