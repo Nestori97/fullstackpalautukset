@@ -46,4 +46,18 @@ describe('blogs app', () => {
       await expect(page.getByText('testiblogi')).toBeVisible()
     })
   })
+  describe('blog likes', () => {
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('textbox').first().fill('mluukkai')
+      await page.getByRole('textbox').last().fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByRole('textbox').first().fill('testiblogilikelle')
+      await page.getByRole('textbox').last().fill('testiblogilikelle')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.goto('http://localhost:5173')
+      await page.getByText('testiblogilikelle').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+    })
+  })
 })
