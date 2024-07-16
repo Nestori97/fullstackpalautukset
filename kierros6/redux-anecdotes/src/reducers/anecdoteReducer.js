@@ -6,6 +6,15 @@ export const voteAnecdote = (id) => {
     data: { id }
   }
 }
+export const createAnecdote = (content) => {
+  return {
+    type: 'NEW_ANECDOTE',
+    payload: {
+      content,
+      id: getId()
+    }
+  }
+}
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -33,6 +42,8 @@ const anecdoteReducer = (state = initialState, action) => {
   console.log('action', action);
 
   switch (action.type) {
+    case 'NEW_ANECDOTE':
+      return [...state, action.payload]
     case 'VOTE':
       const id = action.data.id;
       const anecdoteToVote = state.find(anecdote => anecdote.id === id);
