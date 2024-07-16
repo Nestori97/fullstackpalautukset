@@ -53,7 +53,7 @@ const anecdoteReducer = (state = initialState, action) => {
       };
       return state.map(anecdote =>
         anecdote.id !== id ? anecdote : votedAnecdote
-      );
+      ).sort((anecdote1,anecdote2) =>anecdote2.votes-anecdote1.votes );
     default:
       return state;
   }
