@@ -11,7 +11,8 @@ export const createAnecdote = (content) => {
     type: 'NEW_ANECDOTE',
     payload: {
       content,
-      id: getId()
+      id: getId(),
+      votes: 0
     }
   }
 }
