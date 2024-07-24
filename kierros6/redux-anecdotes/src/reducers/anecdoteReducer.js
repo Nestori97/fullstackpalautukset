@@ -1,5 +1,6 @@
-/* eslint-disable no-case-declarations */
+// reducers/anecdoteReducer.js
 import { createSlice } from '@reduxjs/toolkit'
+import { showNotification } from './notificationReducer'
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -10,7 +11,8 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ];
 
-const getId = () => (100000 * Math.random()).toFixed(0);
+
+const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
   return {
@@ -18,20 +20,17 @@ const asObject = (anecdote) => {
     id: getId(),
     votes: 0
   }
-};
+}
 
-
-
-// reducer
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: anecdotesAtStart.map(asObject),
   reducers: {
     createAnecdote(state, action) {
-      const newAnecdote = action.payload
+      const newAnecdote = asObject(action.payload)
       state.push(newAnecdote)
     },
-    voteAnecdote(state, action){
+    voteAnecdote(state, action) {
       const id = action.payload
       const anecdoteToVote = state.find(n => n.id === id)
       const votedAnecdote = {
@@ -46,4 +45,19 @@ const anecdoteSlice = createSlice({
 })
 
 export const { createAnecdote, voteAnecdote } = anecdoteSlice.actions
+
+export const createAnecdoteWithNotification = (content, seconds) => {
+  return async dispatch => {
+    dispatch(createAnecdote(content))
+    dispatch(showNotification(`Anecdote '${content}' created!`, seconds))
+  }
+}
+
+export const voteAnecdoteWithNotification = (id, content, seconds) => {
+  return async dispatch => {
+    dispatch(voteAnecdote(id))
+    dispatch(showNotification(`You voted '${content}'`, seconds))
+  }
+}
+
 export default anecdoteSlice.reducer
