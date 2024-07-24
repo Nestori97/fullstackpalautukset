@@ -23,6 +23,6 @@ export const showNotification = (message, seconds) => {
       dispatch(clearNotification())
     }, seconds * 1000)
   }
-}
+} 
 
 export default notificationSlice.reducer
