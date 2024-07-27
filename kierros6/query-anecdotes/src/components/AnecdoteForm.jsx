@@ -3,15 +3,15 @@ import { createAnecdote } from '../services/requests'
 import { useNotification } from '../NotificationContext'
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
-  const notifyWith = useNotification()
+  const sendNotification = useNotification()
   const newAnecdoteMutation =  useMutation({
     mutationFn: createAnecdote,
     onSuccess: (anecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-      notifyWith(`anecdote '${anecdote.content}' created`)
+      sendNotification(`anecdote '${anecdote.content}' created`)
     },
     onError: () => {
-      notifyWith('anecdote must be longer than 5 chars')
+      sendNotification('anecdote must be longer than 5 chars')
     }
   })
   const onCreate = (event) => {
