@@ -8,13 +8,11 @@ import BlogForm from './components/BlogForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog as addBlog } from './reducers/blogReducer'
-
+import { setUser } from './reducers/userReducer'
 const App = () => {
     const dispatch = useDispatch()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [user, setUser] = useState(null)
-
     useEffect(() => {
         console.log('when this is done there should be blogs')
         dispatch(initializeBlogs())
@@ -24,12 +22,15 @@ const App = () => {
         console.log(state.blog, 'state.blog')
         return state.blog
     })
+    const user = useSelector((state) => {
+        return state.user
+    })
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
-            setUser(user)
+            dispatch(setUser(user))
             blogService.setToken(user.token)
         }
     }, [])
@@ -38,7 +39,7 @@ const App = () => {
         event.preventDefault()
         try {
             const user = await loginService.login({ username, password })
-            setUser(user)
+            dispatch(setUser(user))
             window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
             blogService.setToken(user.token)
             setUsername('')
@@ -51,7 +52,7 @@ const App = () => {
 
     const handleLogout = () => {
         window.localStorage.removeItem('loggedBlogUser')
-        setUser(null)
+        dispatch(setUser(null))
     }
 
     const createBlog = async (newBlog) => {
@@ -67,7 +68,6 @@ const App = () => {
     const likeABlog = async (blog) => {
         try {
             const likedBlog = await blogService.like(blog)
-            const updatedBlog = { ...likedBlog, user: blog.user }
             dispatch(initializeBlogs())
             dispatch(showNotification(`liked a blog ${blog.title}`, 5))
         } catch (exception) {
