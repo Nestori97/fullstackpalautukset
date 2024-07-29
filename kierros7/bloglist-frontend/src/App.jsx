@@ -5,20 +5,25 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog as addBlog } from './reducers/blogReducer'
+
 const App = () => {
     const dispatch = useDispatch()
-    const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-        blogService
-            .getAll()
-            .then((blogs) => setBlogs(blogs.sort((a, b) => a.likes - b.likes)))
-    }, [])
+        console.log('when this is done there should be blogs')
+        dispatch(initializeBlogs())
+    }, [dispatch])
+
+    const blogs = useSelector((state) => {
+        console.log(state.blog, 'state.blog')
+        return state.blog
+    })
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -52,34 +57,28 @@ const App = () => {
     const createBlog = async (newBlog) => {
         try {
             const addedBlog = await blogService.create(newBlog)
-            setBlogs(blogs.concat(addedBlog).sort((a, b) => a.likes - b.likes))
+            dispatch(addBlog(addedBlog))
             dispatch(showNotification(`Created new blog ${newBlog.title}`, 5))
         } catch (exception) {
             dispatch(showNotification(exception.response.data.error, 5))
         }
     }
+
     const likeABlog = async (blog) => {
         try {
             const likedBlog = await blogService.like(blog)
             const updatedBlog = { ...likedBlog, user: blog.user }
-            setBlogs(
-                blogs
-                    .map((b) => (b.id !== likedBlog.id ? b : updatedBlog))
-                    .sort((a, b) => a.likes - b.likes)
-            )
+            dispatch(initializeBlogs())
             dispatch(showNotification(`liked a blog ${blog.title}`, 5))
         } catch (exception) {
             dispatch(showNotification(exception.response.data.error, 5))
         }
     }
+
     const deleteABlog = async (blog) => {
         try {
-            const likedBlog = await blogService.deleteABlog(blog)
-            setBlogs(
-                blogs
-                    .filter((b) => b.id !== blog.id)
-                    .sort((a, b) => a.likes - b.likes)
-            )
+            await blogService.deleteABlog(blog)
+            dispatch(initializeBlogs())
             dispatch(showNotification(`deleted a blog ${blog.title}`, 5))
         } catch (exception) {
             dispatch(showNotification(exception.response.data.error, 5))
@@ -131,14 +130,15 @@ const App = () => {
             <Togglable buttonLabel="new blog">
                 <BlogForm createBlog={createBlog} />
             </Togglable>
-            {blogs.map((blog) => (
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    likeABlog={likeABlog}
-                    deleteABlog={deleteABlog}
-                />
-            ))}
+            {blogs &&
+                blogs.map((blog) => (
+                    <Blog
+                        key={blog.id}
+                        blog={blog}
+                        likeABlog={likeABlog}
+                        deleteABlog={deleteABlog}
+                    />
+                ))}
         </div>
     )
 }
